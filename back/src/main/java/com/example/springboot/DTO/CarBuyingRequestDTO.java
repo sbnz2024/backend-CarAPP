@@ -14,7 +14,7 @@ public class CarBuyingRequestDTO {
     private CarBuyingRequest.Status status;
     private Date employeedFrom;
     private Date workingTo;
-    private Boolean isAccepted;
+    private CarBuyingRequest.RequestStatus requestStatus;
 
     // Default constructor
     public CarBuyingRequestDTO() {
@@ -31,7 +31,7 @@ public class CarBuyingRequestDTO {
         this.status = carBuyingRequest.getStatus();
         this.employeedFrom = carBuyingRequest.getEmployeedFrom();
         this.workingTo = carBuyingRequest.getWorkingTo();
-        this.isAccepted = carBuyingRequest.getAccepted();
+        this.requestStatus=carBuyingRequest.getRequestStatus();
     }
 
     // Getters and setters
@@ -107,11 +107,11 @@ public class CarBuyingRequestDTO {
         this.workingTo = workingTo;
     }
 
-    public Boolean getAccepted() {
-        return isAccepted;
+    public CarBuyingRequest.RequestStatus getRequestStatus() {
+        return requestStatus;
     }
 
-    public void setAccepted(Boolean accepted) {
-        isAccepted = accepted;
+    public void setRequestStatus(CarBuyingRequest.RequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
     }
 }

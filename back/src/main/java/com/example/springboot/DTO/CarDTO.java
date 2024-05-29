@@ -1,6 +1,7 @@
 package com.example.springboot.DTO;
 
 import com.example.springboot.model.Car;
+import com.example.springboot.model.CarBuyingRequest;
 
 import java.util.Date;
 
@@ -15,6 +16,8 @@ public class CarDTO {
     private Car.Condition condition;
     private Date dateAdded;
     private Boolean isFeatured;
+
+    private CarBuyingRequestDTO carBuyingRequest;
 
     // Default constructor
     public CarDTO() {
@@ -32,11 +35,21 @@ public class CarDTO {
         this.condition = car.getCondition();
         this.dateAdded = car.getDateAdded();
         this.isFeatured = car.getIsFeatured();
+        //this.carBuyingRequest.setAccepted(car.getCarBuyingRequest().getAccepted());
+       // this.carBuyingRequest.setLoanAmount(car.getCarBuyingRequest().getLoanAmount());
     }
 
     // Getters and setters
     public Integer getId() {
         return id;
+    }
+
+    public CarBuyingRequestDTO getCarBuyingRequest() {
+        return carBuyingRequest;
+    }
+
+    public void setCarBuyingRequest(CarBuyingRequestDTO carBuyingRequest) {
+        this.carBuyingRequest = carBuyingRequest;
     }
 
     public void setId(Integer id) {

@@ -12,6 +12,10 @@ public class CarBuyingRequest {
         EMPLOYED, UNEMPLOYED, EMPLOYEDUNSPECIFIED
     }
 
+    public enum RequestStatus {
+        ACCEPTED, REJECTED, PENDING
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +34,7 @@ public class CarBuyingRequest {
     private Integer numberOfRate;
 
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
 
@@ -50,9 +54,17 @@ public class CarBuyingRequest {
     @Temporal(TemporalType.DATE)
     private Date workingTo;
 
-    @Column(name = "is_Accepted", nullable = true)
-    private Boolean isAccepted;
+    @Column(name = "requestStatus", nullable = true)
+    private CarBuyingRequest.RequestStatus requestStatus;
 
+
+    public RequestStatus getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(RequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
+    }
 
     public Double getMonthlyIncome() {
         return monthlyIncome;
@@ -131,11 +143,5 @@ public class CarBuyingRequest {
         this.workingTo = workingTo;
     }
 
-    public Boolean getAccepted() {
-        return isAccepted;
-    }
 
-    public void setAccepted(Boolean accepted) {
-        isAccepted = accepted;
-    }
 }

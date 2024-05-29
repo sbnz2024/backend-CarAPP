@@ -3,6 +3,7 @@ package com.example.springboot.Controller;
 import com.example.springboot.DTO.CarDTO;
 import com.example.springboot.Service.CarService;
 import com.example.springboot.model.Car;
+import com.example.springboot.model.CarBuyingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,14 @@ public class CarController {
 
         List<CarDTO> carsDTO = new ArrayList<>();
         for(Car c : cars){
-            carsDTO.add(new CarDTO(c));
+            if(c.getCarBuyingRequest()!=null && c.getCarBuyingRequest().getRequestStatus() == CarBuyingRequest.RequestStatus.ACCEPTED)
+            {
+                continue;
+            }
+
+
+                carsDTO.add(new CarDTO(c));
+
         }
         return new ResponseEntity<>(carsDTO, HttpStatus.OK);
     }

@@ -31,8 +31,8 @@ public class BuyingService {
         CarBuyingRequest existingRequest = buyingRepository.findById(requestDTO.getId())
                 .orElseThrow(() -> new RuntimeException("CarBuyingRequest not found"));
 
-  /*     Car car = carRepository.findById(requestDTO.getCar().getId()).orElseThrow(() -> new RuntimeException("Car not found"));
-        User user = userRepository.findById(requestDTO.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
+      Car car = carRepository.findById(requestDTO.getCar().getId()).orElseThrow(() -> new RuntimeException("Car not found"));
+       /*  User user = userRepository.findById(requestDTO.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
         existingRequest.setCar(car);
         existingRequest.setUser(user);
@@ -49,8 +49,16 @@ public class BuyingService {
             existingRequest.setWorkingTo(requestDTO.getWorkingTo());
         }
         */
-        existingRequest.setAccepted(requestDTO.getAccepted());
 
+        existingRequest.setRequestStatus(requestDTO.getRequestStatus());
+        car.setCarBuyingRequest(existingRequest);
+
+        if(requestDTO.getRequestStatus()== CarBuyingRequest.RequestStatus.REJECTED)
+        {
+            car.setCarBuyingRequest(null);
+        }
+
+        carRepository.save(car);
         CarBuyingRequest updatedRequest = buyingRepository.save(existingRequest);
 
         return new CarBuyingRequestDTO(updatedRequest);
@@ -64,7 +72,7 @@ public class BuyingService {
         List<CarBuyingRequest> requestsAcceptedNull = new ArrayList<>();
             for( CarBuyingRequest r: requests)
             {
-                if(r.getAccepted()==null)
+                if(r.getRequestStatus()== CarBuyingRequest.RequestStatus.PENDING)
                 {
                     requestsAcceptedNull.add(r);
                 }
