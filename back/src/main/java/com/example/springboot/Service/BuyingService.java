@@ -13,7 +13,10 @@ import com.example.springboot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -94,7 +97,26 @@ public class BuyingService {
         carBuyingRequest.setStatus(buyDTO.getStatus());
         carBuyingRequest.setNumberOfRate(buyDTO.getNumberOfRate());
         carBuyingRequest.setMonthlyIncome(buyDTO.getMonthlyIncome());
+        carBuyingRequest.setAge(buyDTO.getAge());
 
+
+        LocalDate currentDate = LocalDate.now();
+
+        // Dodaj 5 godina trenutnom datumu
+        LocalDate maxDateLocal = currentDate.plusMonths(buyDTO.getNumberOfRate());
+
+
+        LocalDate minDateLocal = currentDate.plusMonths(buyDTO.getNumberOfRate()-10);
+
+        // Konvertujemo LocalDate u Date za maxDateLocal
+        Date maxDate = Date.from(maxDateLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        // Konvertujemo LocalDate u Date za minDateLocal
+        Date minDate = Date.from(minDateLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        carBuyingRequest.setMaxTimeToPay(maxDate);
+        carBuyingRequest.setMinTimeToPay(minDate);
+        carBuyingRequest.setAiDecision(CarBuyingRequest.Decision.Waiting);
 
 
         if(buyDTO.getEmployeedFrom()!=null)

@@ -16,6 +16,10 @@ public class CarBuyingRequest {
         ACCEPTED, REJECTED, PENDING
     }
 
+    public enum Decision {
+        Approved_By_System,Not_Approved_By_Sustem,Waiting
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +61,43 @@ public class CarBuyingRequest {
     @Column(name = "requestStatus", nullable = true)
     private CarBuyingRequest.RequestStatus requestStatus;
 
+    @Column(name = "age", nullable = false)
+    private Integer age;
+
+    @Column(name = "maxTimeToPay", nullable = false)
+    private Date maxTimeToPay;
+
+    @Column(name = "minTimeToPay", nullable = false)
+    private Date minTimeToPay;
+
+
+    @Column(name = "aiDecision", nullable = false)
+    private CarBuyingRequest.Decision aiDecision;
+
+
+    public Date getMaxTimeToPay() {
+        return maxTimeToPay;
+    }
+
+    public void setMaxTimeToPay(Date maxTimeToPay) {
+        this.maxTimeToPay = maxTimeToPay;
+    }
+
+    public Date getMinTimeToPay() {
+        return minTimeToPay;
+    }
+
+    public void setMinTimeToPay(Date minTimeToPay) {
+        this.minTimeToPay = minTimeToPay;
+    }
+
+    public Decision getAiDecision() {
+        return aiDecision;
+    }
+
+    public void setAiDecision(Decision aiDecision) {
+        this.aiDecision = aiDecision;
+    }
 
     public RequestStatus getRequestStatus() {
         return requestStatus;
@@ -92,6 +133,14 @@ public class CarBuyingRequest {
 
     public CarBuyingRequest() {
 
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public Integer getId() {

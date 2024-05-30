@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Rent> rents = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Transaction> transactions = new ArrayList<>();
+
 
     public User(Integer id, String email, String password, String username, String firstname, String lastname, Role role) {
         this.id = id;
@@ -49,9 +52,18 @@ public class User implements UserDetails {
         this.lastname = lastname;
         this.role = role;
         this.rents=new ArrayList<>();
+        this.transactions=new ArrayList<>();
     }
 
     public User() {
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     public List<Rent> getRents() {

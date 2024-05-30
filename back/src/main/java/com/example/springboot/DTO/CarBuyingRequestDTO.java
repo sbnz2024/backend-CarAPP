@@ -1,6 +1,7 @@
 package com.example.springboot.DTO;
 
 import com.example.springboot.model.CarBuyingRequest;
+import jakarta.persistence.Column;
 
 import java.util.Date;
 
@@ -15,6 +16,16 @@ public class CarBuyingRequestDTO {
     private Date employeedFrom;
     private Date workingTo;
     private CarBuyingRequest.RequestStatus requestStatus;
+    private Integer age;
+
+
+    private Date maxTimeToPay;
+
+
+    private Date minTimeToPay;
+
+
+   // private CarBuyingRequest.Decision aiDecision;
 
     // Default constructor
     public CarBuyingRequestDTO() {
@@ -32,6 +43,34 @@ public class CarBuyingRequestDTO {
         this.employeedFrom = carBuyingRequest.getEmployeedFrom();
         this.workingTo = carBuyingRequest.getWorkingTo();
         this.requestStatus=carBuyingRequest.getRequestStatus();
+        this.age=carBuyingRequest.getAge();
+        this.maxTimeToPay=carBuyingRequest.getMaxTimeToPay();
+        this.minTimeToPay=carBuyingRequest.getMinTimeToPay();
+       // this.aiDecision=carBuyingRequest.getAiDecision();
+    }
+
+    public Date getMaxTimeToPay() {
+        return maxTimeToPay;
+    }
+
+    public void setMaxTimeToPay(Date maxTimeToPay) {
+        this.maxTimeToPay = maxTimeToPay;
+    }
+
+    public Date getMinTimeToPay() {
+        return minTimeToPay;
+    }
+
+    public void setMinTimeToPay(Date minTimeToPay) {
+        this.minTimeToPay = minTimeToPay;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     // Getters and setters
