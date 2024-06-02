@@ -6,10 +6,14 @@ import com.example.springboot.DTO.RentDTO;
 import com.example.springboot.Repository.BuyingRepository;
 import com.example.springboot.Repository.CarRepository;
 import com.example.springboot.Repository.UserRepository;
+import com.example.springboot.Util.DebugAgendaEventListener;
 import com.example.springboot.model.Car;
 import com.example.springboot.model.CarBuyingRequest;
 import com.example.springboot.model.Rent;
 import com.example.springboot.model.User;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,20 +74,33 @@ public class BuyingService {
 
 
     public List<CarBuyingRequest> getAllForReview(){
-
         List<CarBuyingRequest> requests = buyingRepository.findAll();
         List<CarBuyingRequest> requestsAcceptedNull = new ArrayList<>();
-            for( CarBuyingRequest r: requests)
-            {
-                if(r.getRequestStatus()== CarBuyingRequest.RequestStatus.PENDING)
-                {
-                    requestsAcceptedNull.add(r);
-                }
+
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kieContainer = ks.getKieClasspathContainer();
+        KieSession kSession = kieContainer.newKieSession("ksession-rules");
+
+        kSession.addEventListener(new DebugAgendaEventListener());
+
+        for(CarBuyingRequest r: requests) {
+            if(r.getRequestStatus() == CarBuyingRequest.RequestStatus.PENDING) {
+                kSession.insert(r);
+
+                requestsAcceptedNull.add(r);
             }
+        }
+      kSession.fireAllRules();
+
+        for(CarBuyingRequest r: requestsAcceptedNull) {
+            buyingRepository.save(r);
+        }
+
+
+        kSession.dispose(); // Ovo oslobađa resurse
+
         return requestsAcceptedNull;
     }
-
-
 
 
     public CarBuyingRequestDTO buy(CarBuyingRequestDTO buyDTO) {
@@ -98,7 +115,7 @@ public class BuyingService {
         carBuyingRequest.setNumberOfRate(buyDTO.getNumberOfRate());
         carBuyingRequest.setMonthlyIncome(buyDTO.getMonthlyIncome());
         carBuyingRequest.setAge(buyDTO.getAge());
-
+        carBuyingRequest.setRequestStatus(buyDTO.getRequestStatus());
 
         LocalDate currentDate = LocalDate.now();
 
@@ -116,7 +133,7 @@ public class BuyingService {
 
         carBuyingRequest.setMaxTimeToPay(maxDate);
         carBuyingRequest.setMinTimeToPay(minDate);
-        carBuyingRequest.setAiDecision(CarBuyingRequest.Decision.Waiting);
+        carBuyingRequest.setAiDecision(2);
 
 
         if(buyDTO.getEmployeedFrom()!=null)

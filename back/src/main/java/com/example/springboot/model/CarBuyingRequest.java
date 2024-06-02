@@ -72,8 +72,9 @@ public class CarBuyingRequest {
 
 
     @Column(name = "aiDecision", nullable = false)
-    private CarBuyingRequest.Decision aiDecision;
+    private Integer aiDecision;
 
+    private boolean decisionMade;
 
     public Date getMaxTimeToPay() {
         return maxTimeToPay;
@@ -91,11 +92,20 @@ public class CarBuyingRequest {
         this.minTimeToPay = minTimeToPay;
     }
 
-    public Decision getAiDecision() {
+
+    public boolean isDecisionMade() {
+        return decisionMade;
+    }
+
+    public void setDecisionMade(boolean decisionMade) {
+        this.decisionMade = decisionMade;
+    }
+
+    public Integer getAiDecision() {
         return aiDecision;
     }
 
-    public void setAiDecision(Decision aiDecision) {
+    public void setAiDecision(Integer aiDecision) {
         this.aiDecision = aiDecision;
     }
 

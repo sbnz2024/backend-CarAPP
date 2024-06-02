@@ -25,7 +25,7 @@ public class CarBuyingRequestDTO {
     private Date minTimeToPay;
 
 
-   // private CarBuyingRequest.Decision aiDecision;
+    private String aiDecision;
 
     // Default constructor
     public CarBuyingRequestDTO() {
@@ -47,6 +47,25 @@ public class CarBuyingRequestDTO {
         this.maxTimeToPay=carBuyingRequest.getMaxTimeToPay();
         this.minTimeToPay=carBuyingRequest.getMinTimeToPay();
        // this.aiDecision=carBuyingRequest.getAiDecision();
+        if(carBuyingRequest.getAiDecision()==1)
+        {
+            this.aiDecision="System approved this request";
+        }
+        else
+        {
+            this.aiDecision="System not approved this request";
+        }
+
+
+
+    }
+
+    public String getAiDecision() {
+        return aiDecision;
+    }
+
+    public void setAiDecision(String aiDecision) {
+        this.aiDecision = aiDecision;
     }
 
     public Date getMaxTimeToPay() {
