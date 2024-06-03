@@ -76,6 +76,17 @@ public class CarBuyingRequest {
 
     private boolean decisionMade;
 
+    @Column(name = "stableIncome", nullable = false)
+    private boolean stableIncome;
+
+    public boolean isStableIncome() {
+        return stableIncome;
+    }
+
+    public void setStableIncome(boolean stableIncome) {
+        this.stableIncome = stableIncome;
+    }
+
     public Date getMaxTimeToPay() {
         return maxTimeToPay;
     }

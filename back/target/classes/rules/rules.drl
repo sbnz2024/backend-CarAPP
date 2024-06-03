@@ -10,18 +10,21 @@ query queryMatch(CarBuyingRequest $request)
     (
         checkWorkStatusENP($request;) and
         checkAge($request;) and
-        checkMonthlyIncome($request;)
+        checkMonthlyIncome($request;)and
+        checkStabileIncome($request;)
     ) or
     (
         checkAboveAge($request;) and
         checkMaxTimeForAbove65($request;) and
-        checkMonthlyIncome($request;)
+        checkMonthlyIncome($request;)and
+        checkStabileIncome($request;)
     ) or
     (
         checkAge($request;) and
         checkWorkStatus($request;) and
         checkMaxTimeToPayForEmployed($request;) and
-        checkMonthlyIncome($request;)
+        checkMonthlyIncome($request;)and
+        checkStabileIncome($request;)
     )
 end
 
@@ -58,6 +61,10 @@ end
 // Define the query to check the maximum time to pay for employed individuals
 query checkMaxTimeToPayForEmployed(CarBuyingRequest $request)
     $r : CarBuyingRequest(this == $request, workingTo after maxTimeToPay)
+end
+
+query checkStabileIncome(CarBuyingRequest $request)
+    $r :CarBuyingRequest(this==$request,stableIncome==true)
 end
 
 // Define the rule that uses the queryMatch query
