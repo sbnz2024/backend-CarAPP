@@ -5,21 +5,24 @@ import java.util.Date
 import java.util.ArrayList;
 import org.apache.commons.lang3.time.DateUtils;
 
-
-/*
-
-rule "Set AI Decision if godine < 100000"
-when
-    $request : CarBuyingRequest( age < 100000 )
-then
-    $request.setAiDecision(1);
-    System.out.println("AI Decision set to 1 for request with godine < 100000");
-end*/
-// Define the main query for matching
 // Define the main query for matching
 query queryMatch(CarBuyingRequest $request)
-    checkAge($request;)
-    checkMonthlyIncome($request;)
+    (
+        checkWorkStatusENP($request;) and
+        checkAge($request;) and
+        checkMonthlyIncome($request;)
+    ) or
+    (
+        checkAboveAge($request;) and
+        checkMaxTimeForAbove65($request;) and
+        checkMonthlyIncome($request;)
+    ) or
+    (
+        checkAge($request;) and
+        checkWorkStatus($request;) and
+        checkMaxTimeToPayForEmployed($request;) and
+        checkMonthlyIncome($request;)
+    )
 end
 
 // Define the query to check the age requirement
@@ -30,6 +33,31 @@ end
 // Define the query to check the monthly income requirement
 query checkMonthlyIncome(CarBuyingRequest $request)
     $r : CarBuyingRequest(this == $request, (loanAmount / numberOfRate) < (0.3 * monthlyIncome))
+end
+
+// Corrected query to check the maximum time to pay for people above 65
+query checkMaxTimeForAbove65(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, maxTimeToPay before DateUtils.addYears(new Date(), 5))
+end
+
+// Define the query to check the age requirement above 65
+query checkAboveAge(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, age > 65)
+end
+
+// Define the query to check the work status (employed or unemployed)
+query checkWorkStatusENP(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, status == Status.EMPLOYED || status == Status.UNEMPLOYED)
+end
+
+// Define the query to check the work status (unspecified)
+query checkWorkStatus(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, status == Status.EMPLOYEDUNSPECIFIED)
+end
+
+// Define the query to check the maximum time to pay for employed individuals
+query checkMaxTimeToPayForEmployed(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, workingTo after maxTimeToPay)
 end
 
 // Define the rule that uses the queryMatch query

@@ -138,12 +138,12 @@ public class BuyingService {
 
         if(buyDTO.getEmployeedFrom()!=null)
         {
-            buyDTO.setEmployeedFrom(buyDTO.getEmployeedFrom());
+            carBuyingRequest.setEmployeedFrom(buyDTO.getEmployeedFrom());
         }
 
         if(buyDTO.getWorkingTo()!=null)
         {
-            buyDTO.setWorkingTo(buyDTO.getWorkingTo());
+            carBuyingRequest.setWorkingTo(buyDTO.getWorkingTo());
         }
 
 
