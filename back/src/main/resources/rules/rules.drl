@@ -11,20 +11,23 @@ query queryMatch(CarBuyingRequest $request)
         checkWorkStatusENP($request;) and
         checkAge($request;) and
         checkMonthlyIncome($request;)and
-        checkStabileIncome($request;)
+        checkStabileIncome($request;)and
+        checkStableUser($request;)
     ) or
     (
         checkAboveAge($request;) and
         checkMaxTimeForAbove65($request;) and
         checkMonthlyIncome($request;)and
-        checkStabileIncome($request;)
+        checkStabileIncome($request;)and
+        checkStableUser($request;)
     ) or
     (
         checkAge($request;) and
         checkWorkStatus($request;) and
         checkMaxTimeToPayForEmployed($request;) and
         checkMonthlyIncome($request;)and
-        checkStabileIncome($request;)
+        checkStabileIncome($request;)and
+        checkStableUser($request;)
     )
 end
 
@@ -65,6 +68,10 @@ end
 
 query checkStabileIncome(CarBuyingRequest $request)
     $r :CarBuyingRequest(this==$request,stableIncome==true)
+end
+
+query checkStableUser(CarBuyingRequest $request)
+    $r :CarBuyingRequest(this==$request,user.isUnstableUser()==false)
 end
 
 // Define the rule that uses the queryMatch query

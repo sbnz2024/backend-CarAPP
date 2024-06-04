@@ -109,6 +109,9 @@ public class BuyingService {
         Car car = carRepository.findById(buyDTO.getCar().getId()).orElseThrow(() -> new RuntimeException("Car not found"));
         User user = userRepository.findById(buyDTO.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
+
+
+
         CarBuyingRequest carBuyingRequest = new CarBuyingRequest();
         carBuyingRequest.setCar(car);
         carBuyingRequest.setUser(user);
@@ -214,6 +217,8 @@ public class BuyingService {
         {
             carBuyingRequest.setStableIncome(false);
         }
+
+
 
             // Save the rent entity
             CarBuyingRequest savedBuy = buyingRepository.save(carBuyingRequest);

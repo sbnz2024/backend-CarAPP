@@ -79,6 +79,8 @@ public class CarBuyingRequest {
     @Column(name = "stableIncome", nullable = false)
     private boolean stableIncome;
 
+
+
     public boolean isStableIncome() {
         return stableIncome;
     }
