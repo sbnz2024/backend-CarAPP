@@ -1,118 +1,86 @@
 package rules;
-import com.example.springboot.model.Arrangement
 
+import com.example.springboot.model.CarBuyingRequest
 import java.util.Date
 import java.util.ArrayList;
 import org.apache.commons.lang3.time.DateUtils;
 
-//rule "Aranžman je popularan"
-//when
-//$arragment : Arrangement(ratings.size() >=20 || ratings.size()>=10 , state==true)
-//then
-//modify($arragment){setPopular(true)}
-//end
-//
-//rule "NoviAranžman"
-//when
-//    $arrangement: Arrangement(dateAdded >= (new Date() - 30*24*60*60*1000)) // Proveravamo da li je datum dodavanja u poslednjih 30 dana
-//then
-//    $arrangement.setState(true); // Postavljamo polje "Nov" na true za novi aranžman
-//end
-//
-//rule "OdrediStatusAranžmana"
-//when
-//    $arrangement: Arrangement($averageRating: calculateAverageRating())
-//then
-//    if ($averageRating >= 4) {
-//        $arrangement.setGrade(Arrangement.Grade.GOOD);
-//    } else if ($averageRating <= 2.5) {
-//        $arrangement.setGrade(Arrangement.Grade.BAD);
-//    } else {
-//        $arrangement.setGrade(Arrangement.Grade.NEUTRAL);
-//    }
-//end
-
-global ArrayList<Arrangement> preporuceniAranzmani;
-
-rule "Novi aranžman po datumu dodavanja"
-
-    when
-        $a : Arrangement(dateAdded != null && dateAdded.after(DateUtils.addMonths(new Date(), -1)))
-    then
-        System.out.println("Novi aranžman po datumu dodavanja" + $a.getName());
-        $a.setState(true);
-        update($a);
+// Define the main query for matching
+query queryMatch(CarBuyingRequest $request)
+    (
+        checkWorkStatusENP($request;) and
+        checkAge($request;) and
+        checkMonthlyIncome($request;)and
+        checkStabileIncome($request;)and
+        checkStableUser($request;)
+    ) or
+    (
+        checkAboveAge($request;) and
+        checkMaxTimeForAbove65($request;) and
+        checkMonthlyIncome($request;)and
+        checkStabileIncome($request;)and
+        checkStableUser($request;)
+    ) or
+    (
+        checkAge($request;) and
+        checkWorkStatus($request;) and
+        checkMaxTimeToPayForEmployed($request;) and
+        checkMonthlyIncome($request;)and
+        checkStabileIncome($request;)and
+        checkStableUser($request;)
+    )
 end
 
-rule "Novi aranžman po datumu objave"
-    when
-        $a : Arrangement(dateAdded != null && dateAdded.after(DateUtils.addMonths(new Date(), -6)))
-    then
-        $a.setState(true);
-        update($a);
+// Define the query to check the age requirement
+query checkAge(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, age < 65)
 end
 
-rule "Popularni aranžman"
-    when
-        $a : Arrangement(ratings.size() >= 20)
-    then
-        $a.setPopular(true);
-        update($a);
+// Define the query to check the monthly income requirement
+query checkMonthlyIncome(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, (loanAmount / numberOfRate) < (0.3 * monthlyIncome))
 end
 
-rule "Popularni novi aranžman"
-    when
-        $a : Arrangement(ratings.size() >= 10 && dateAdded.after(DateUtils.addMonths(new Date(), -1)))
-    then
-        $a.setPopular(true);
-        update($a);
-
+// Corrected query to check the maximum time to pay for people above 65
+query checkMaxTimeForAbove65(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, maxTimeToPay before DateUtils.addYears(new Date(), 5))
 end
 
-rule "Dobro ocenjen aranžman"
-    when
-        $a : Arrangement(averangeRating >= 4)
-    then
-        $a.setGrade(Arrangement.Grade.GOOD);
-        update($a);
+// Define the query to check the age requirement above 65
+query checkAboveAge(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, age > 65)
 end
 
-rule "Loše ocenjen aranžman"
-    when
-        $a : Arrangement(averangeRating <= 2.5)
-    then
-        $a.setGrade(Arrangement.Grade.BAD);
-        update($a);
+// Define the query to check the work status (employed or unemployed)
+query checkWorkStatusENP(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, status == Status.EMPLOYED || status == Status.UNEMPLOYED)
 end
 
-rule "Neutralno ocenjen aranžman"
-    when
-        $a : Arrangement(averangeRating > 2.5 && averangeRating < 4 || ratings.size() == 0)
-    then
-        $a.setGrade(Arrangement.Grade.NEUTRAL);
-        update($a);
+// Define the query to check the work status (unspecified)
+query checkWorkStatus(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, status == Status.EMPLOYEDUNSPECIFIED)
 end
 
-rule "Preporuči popularne dobro ili neutralno ocenjene"
-    when
-        $a : Arrangement(popular == true && (averangeRating >= 2.5))
-    then
-        preporuceniAranzmani.add($a);
+// Define the query to check the maximum time to pay for employed individuals
+query checkMaxTimeToPayForEmployed(CarBuyingRequest $request)
+    $r : CarBuyingRequest(this == $request, workingTo after maxTimeToPay)
 end
 
-rule "Preporuci nove aranžmane"
-    when
-        $a : Arrangement(state == true)
-    then
-        preporuceniAranzmani.add($a);
+query checkStabileIncome(CarBuyingRequest $request)
+    $r :CarBuyingRequest(this==$request,stableIncome==true)
 end
 
-rule "Filtriraj i redukuj preporuke"
-    when
-        $list : ArrayList(size > 10) from collect(Arrangement())
-        $a : Arrangement(averangeRating <= 2.5) from $list
-    then
-        $list.remove($a);
-        // Ako i dalje ima više od 10, random redukcija
-        // Implementacija za random redukciju
+query checkStableUser(CarBuyingRequest $request)
+    $r :CarBuyingRequest(this==$request,user.isUnstableUser()==false)
+end
+
+// Define the rule that uses the queryMatch query
+rule "Give system decision"
+when
+    $request : CarBuyingRequest(user != null, !decisionMade)
+    queryMatch($request;)
+then
+    $request.setAiDecision(1);
+    $request.setDecisionMade(true);
+    update($request);
 end

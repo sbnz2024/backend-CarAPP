@@ -40,6 +40,20 @@ public class User implements UserDetails {
     private List<Rent> rents = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Transaction> transactions = new ArrayList<>();
+
+    @Column(name = "unstableUser", nullable = false)
+    private boolean unstableUser;
+
+    public boolean isUnstableUser() {
+        return unstableUser;
+    }
+
+    public void setUnstableUser(boolean unstableUser) {
+        this.unstableUser = unstableUser;
+    }
+
     public User(Integer id, String email, String password, String username, String firstname, String lastname, Role role) {
         this.id = id;
         this.email = email;
@@ -49,9 +63,24 @@ public class User implements UserDetails {
         this.lastname = lastname;
         this.role = role;
         this.rents=new ArrayList<>();
+        this.transactions=new ArrayList<>();
+
+        this.unstableUser=false;
     }
 
+
+
+
     public User() {
+        this.unstableUser=false;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     public List<Rent> getRents() {

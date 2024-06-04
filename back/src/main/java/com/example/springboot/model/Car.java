@@ -54,6 +54,11 @@ public class Car {
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     private List<Rent> rents = new ArrayList<>();
 
+    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL)
+    private CarBuyingRequest carBuyingRequest;
+
+
+
     public Car() {
     }
 
@@ -67,9 +72,20 @@ public class Car {
         this.type = type;
         this.condition = condition;
         this.rents = new ArrayList<>();
+        this.carBuyingRequest=null;
 
     }
     // Getters and setters
+
+
+    public CarBuyingRequest getCarBuyingRequest() {
+        return carBuyingRequest;
+    }
+
+    public void setCarBuyingRequest(CarBuyingRequest carBuyingRequest) {
+        this.carBuyingRequest = carBuyingRequest;
+    }
+
     public Integer getId() {
         return id;
     }
